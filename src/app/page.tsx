@@ -4,6 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { authActions } from "@/lib/slices/authSlice";
+import { useAppDispatch } from "@/hooks/redux";
+import toast from "react-hot-toast";
 
 
 // export const metadata: Metadata = {
@@ -13,10 +17,14 @@ import { useRouter } from "next/navigation";
 
 const SignIn: React.FC = () => {
 
+  const dispatch = useAppDispatch()
+
   const router = useRouter()
 
   function handleFormSubmit(e:FormEvent) {
     e.preventDefault()
+    dispatch(authActions.signIn())
+    toast.success("Sign in successful")
     router.push("/dashboard/")
   }
   return (
@@ -66,7 +74,7 @@ const SignIn: React.FC = () => {
                   type="password"
                   name="password"
                   id="password"
-                  placeholder="••••••••"
+                  placeholder="Password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 "
                   required
                 />

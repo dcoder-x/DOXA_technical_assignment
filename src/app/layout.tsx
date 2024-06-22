@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import { Provider } from "react-redux";
 import store from "@/lib/store";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -30,6 +31,7 @@ export default function RootLayout({
             {loading ? <Loader /> : children}
           </div>
         </Provider>
+        <Toaster/>
       </body>
     </html>
   );

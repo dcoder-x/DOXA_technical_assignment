@@ -6,7 +6,7 @@ const initialproduct:productType = {
     price:0,
     quantity:0,
     category:"",
-    units_available:0
+    units_available:0,
 }
 
 const productSlice = createSlice({
@@ -19,5 +19,5 @@ const productSlice = createSlice({
 }
 })
 
-export const actions = productSlice.actions
+export const productActions = productSlice.actions
 export default productSlice
