@@ -1,6 +1,5 @@
 "use client"
 import { useEffect, useState } from 'react';
-// import axios from 'axios';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { setIsLoading } from '@/lib/slices/loadStateSlice';
@@ -11,7 +10,6 @@ import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 import ProductFilter from '@/components/utils/Filter';
 import Sort from '@/components/utils/Sort';
 import EmptyPageLottie from '@/components/Lottie/Empty';
-import axios from 'axios';
 import Loader from './common/Loader';
 import productSlice, { productActions } from '@/lib/slices/productSlice';
 import { useGetProductsQuery } from '@/lib/services/productQuery';
