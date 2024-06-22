@@ -1,88 +1,53 @@
-"use client"
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import ActionModalTemplate from '@/components/Modals/DeleteModal';
+"use client";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import ActionModalTemplate from "@/components/Modals/DeleteModal";
 // import placeHolderImage from "../../images/general/placeholder.jpg"
-import DefaultLayout from '@/components/Layouts/DefaultLayout';
-import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { setIsLoading } from '@/lib/slices/loadStateSlice';
-import { productType } from '@/types/product';
-import EmptyPageLottie from '@/components/Lottie/Empty';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { setIsLoading } from "@/lib/slices/loadStateSlice";
+import { productType } from "@/types/product";
+import EmptyPageLottie from "@/components/Lottie/Empty";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useDeleteProductMutation, useGetProductQuery } from "@/lib/services/productQuery";
+import Loader from "./common/Loader";
 
 const Product: React.FC = () => {
   // State for modal visibility
   const [show, setShow] = useState(false);
-  const router = useRouter()
-
-
-
+  const router = useRouter();
   //  product details from the global store
-  const product = useAppSelector((state)=>state.product.product)
-  const dispatch = useAppDispatch()
+  const product: productType = useAppSelector((state) => state.product.product);
+  const dispatch = useAppDispatch();
+  const { data: productData, isLoading } = useGetProductQuery(
+    product.id as number,
+  );
 
-  const setLoaderState = (state:boolean) => dispatch(setIsLoading)
+  const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation()
+  const setLoaderState = (state: boolean) => dispatch(setIsLoading);
 
-  const [productData, setproduct] = useState<productType>(product);
-
-
+  //   const [productData, setProductData] = useState<productType>(product);
 
   // Modal controls
   const closeModal = () => setShow(false);
   const openModal = () => setShow(true);
 
-  // Fetch product details from the server
-  async function getProduct() {
-    try {
-      if (setLoaderState) {
-        setLoaderState(true);
-      }
-      const response = await axios.get(
-        ``,
-      );
-      if (response.status === 200) {
-        setproduct(response.data.product);
-        if (setLoaderState) {
-          setLoaderState(false);
-        }
-      }
-    } catch (error: any) {
-      if (setLoaderState) {
-        setLoaderState(false);
-      }
-      toast.error(error?.message);
-      console.log(error, 'error from suspend product');
-    }
-  }
 
   useEffect(() => {
     // // Redirect if product is not available and fetch product details on mount
-    // !productData ? router.push('/inventory/all') : getProduct();
+    !productData && router.push("/inventory/all");
   }, []);
 
-  // product operations (modal actions)
+  // delete product from inventory
 
   async function deleteproduct() {
     try {
-      if (setLoaderState) {
-        setLoaderState(true);
-      }
-      const response = await axios.delete(
-        `https://api.agapechristianministries.com/api/product/delete_product/${product.id}`,
-      );
-      if (response.status === 201) {
-        if (setLoaderState) {
-          setLoaderState(false);
-        }
-        router.push('/inventory/all');
-      }
+        await deleteProduct(product.id as number).unwrap()
+        router.back()
     } catch (error: any) {
-      if (setLoaderState) {
-        setLoaderState(false);
-      }
       toast.error(error?.message);
       console.log(error);
     }
@@ -96,32 +61,32 @@ const Product: React.FC = () => {
             {/* Breadcrumb component */}
             <Breadcrumb pageName="View product" />
             <div className="bg-gray-100 dark:bg-gray-800 py-8">
-              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col md:flex-row -mx-4">
+              <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+                <div className="-mx-4 flex flex-col md:flex-row">
                   {/* product Image and action buttons */}
-                  <div className="md:flex-1 px-4">
-                    <div className="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4">
+                  <div className="px-4 md:flex-1">
+                    <div className="bg-gray-300 dark:bg-gray-700 mb-4 h-[460px] rounded-lg">
                       <img
-                        className="w-full h-full object-cover  rounded-lg"
+                        className="h-full w-full rounded-lg  object-cover"
                         src={""}
                         alt="Product Image"
                       />
                     </div>
-                    <div className="flex -mx-2 mb-4">
+                    <div className="-mx-2 mb-4 flex">
                       <div className="w-1/2 px-2">
                         {/* Button to activate/suspend product */}
                         <Link
-                        href={"edit"}
-                          className="w-full bg-gray-900 dark:bg-gray-600 text-white font-bold hover:bg-gray-800 dark:hover:bg-gray-700 bg-violet-800 px-4 py-2 rounded-full"
+                          href={"edit"}
+                          className="bg-gray-900 dark:bg-gray-600 hover:bg-gray-800 dark:hover:bg-gray-700 w-full whitespace-nowrap rounded-full bg-violet-800 px-4 py-2 font-bold text-white"
                         >
-                            Edit product
+                          Edit product
                         </Link>
                       </div>
                       <div className="w-1/2 px-2">
                         {/* Button to delete product */}
                         <button
                           onClick={openModal}
-                          className="w-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white py-2 px-4 bg-red-500 rounded-full font-bold hover:bg-gray-300 dark:hover:bg-gray-600"
+                          className="bg-gray-200 dark:bg-gray-700 text-gray-800 bg-red-500 hover:bg-gray-300 dark:hover:bg-gray-600 w-full whitespace-nowrap rounded-full bg-red px-4 py-2 font-bold dark:text-white"
                         >
                           Delete product
                         </button>
@@ -129,14 +94,14 @@ const Product: React.FC = () => {
                     </div>
                   </div>
                   {/* product name */}
-                  <div className="md:flex-1 px-4">
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-                      {productData?.name }
+                  <div className="px-4 md:flex-1">
+                    <h2 className="text-gray-800 mb-2 text-2xl font-bold dark:text-white">
+                      {productData?.name}
                     </h2>
                     <div className="mb-4">
                       <div className="my-4">
                         {/* Display product creation date */}
-                        <span className="font-bold text-gray-700 dark:text-gray-300">
+                        <span className="text-gray-700 dark:text-gray-300 font-bold">
                           Date Created:
                         </span>
                         <span className="text-gray-600 dark:text-gray-300 mx-2">
@@ -145,42 +110,43 @@ const Product: React.FC = () => {
                       </div>
                       <div>
                         {/* Display product category */}
-                        <span className="font-bold text-gray-700 dark:text-gray-300">
+                        <span className="text-gray-700 dark:text-gray-300 font-bold">
                           Category:
                         </span>
                         <span className="text-gray-600 dark:text-gray-300 mx-2">
-                          {productData?.category || 'not provided'}
+                          {productData?.category || "not provided"}
                         </span>
                       </div>
                       <div>
                         {/* Display product price*/}
-                        <span className="font-bold text-gray-700 dark:text-gray-300">
+                        <span className="text-gray-700 dark:text-gray-300 font-bold">
                           Price:
                         </span>
                         <span className="text-gray-600 dark:text-gray-300 mx-2">
-                          $ {productData?.price || 'Not provided'}
+                          $ {productData?.price || "Not provided"}
                         </span>
                       </div>
                     </div>
                     <div>
-                        {/* Display product price*/}
-                        <span className="font-bold text-gray-700 dark:text-gray-300">
-                          Quantity:
-                        </span>
-                        <span className="text-gray-600 dark:text-gray-300 mx-2">
-                          $ {productData?.quantity || '0'}
-                        </span>
-                      </div>
+                      {/* Display product price*/}
+                      <span className="text-gray-700 dark:text-gray-300 font-bold">
+                        Quantity:
+                      </span>
+                      <span className="text-gray-600 dark:text-gray-300 mx-2">
+                        $ {productData?.quantity || "0"}
+                      </span>
+                    </div>
+                    <div>
+                    {/* Display product price*/}
+                    <span className="text-gray-700 dark:text-gray-300 font-bold">
+                      Available products:
+                    </span>
+                    <span className="text-gray-600 dark:text-gray-300 mx-2">
+                      {productData?.units_available || "Not provided"}
+                    </span>
                   </div>
-                  <div>
-                        {/* Display product price*/}
-                        <span className="font-bold text-gray-700 dark:text-gray-300">
-                          Available products:
-                        </span>
-                        <span className="text-gray-600 dark:text-gray-300 mx-2">
-                          $ {productData?.units_available || 'Not provided'}
-                        </span>
-                      </div>
+                  </div>
+     
                 </div>
               </div>
             </div>
@@ -196,10 +162,11 @@ const Product: React.FC = () => {
           onAccept={deleteproduct}
           onClose={closeModal}
         />
+        {isLoading && <Loader />}
       </>
     );
   }
-  return <EmptyPageLottie/>;
+  return <EmptyPageLottie />;
 };
 
 export default Product;

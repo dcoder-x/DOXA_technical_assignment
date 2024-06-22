@@ -14,53 +14,29 @@ import EmptyPageLottie from '@/components/Lottie/Empty';
 import axios from 'axios';
 import Loader from './common/Loader';
 import productSlice, { productActions } from '@/lib/slices/productSlice';
+import { useGetProductsQuery } from '@/lib/services/productQuery';
 
 const Products:React.FC = () => {
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('');
-  const [productData, setproductData] = useState<[] | undefined>();
+//   const [productData, setproductData] = useState<[] | undefined>();
   const [sort, setSort] = useState('asc');
-  const [sortedAndFilteredData, setSortedAndFilteredData] = useState([]);
+  const [sortedAndFilteredData, setSortedAndFilteredData] = useState<productType[]>([]);
 
-  const isLoading = useAppSelector((state)=>state.requestLoader.isLoading)
-
-  console.log(isLoading," request loading state")
   const dispatch = useAppDispatch()
 
   const setLoaderState = (state:boolean) => dispatch(setIsLoading(state))
 
   const setCurrentProduct = (product:productType)=>dispatch(productActions.setProduct(product))
 
-  async function getProducts() {
-    console.log('products call');
-    try {
-      if (setLoaderState) {
-        setLoaderState(true);
-      }
-      const response = await axios.get("https://inventory.free.beeceptor.com/api/inventory"
-      );
-      console.log('response delivered', response);
-      if (response.status === 200) {
-        if (setLoaderState) {
-          setLoaderState(false);
-        }
-        console.log(response.data);
-        setproductData(response.data);
-      }
-    } catch (error: any) {
-      if (setLoaderState) {
-        setLoaderState(false);
-      }
-      console.log(error);
-      alert(error.message || 'something went wrong');
-    }
-  }
+  const {data:productData,isLoading} = useGetProductsQuery()
+
 
   useEffect(() => {
     const filteredData =
       productData?.filter(
-        (product: { name: string; firstName: string }) =>
+        (product: { name: string }) =>
           product?.name?.toLowerCase()?.includes(filter.toLowerCase()),
         // Assuming `product` has `name`, 
       ) || [];
@@ -77,10 +53,7 @@ const Products:React.FC = () => {
 
     setSortedAndFilteredData(sortedData);
   }, [productData, filter, sort]);
-  // fetch data after mount
-  useEffect(() => {
-    getProducts();
-  }, []);
+
 
 function handleView(product:productType) {
   setCurrentProduct(product)

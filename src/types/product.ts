@@ -4,6 +4,6 @@ export type productType={
     quantity:number,
     units_available?:number,
     category:string,
-    id?:string,
+    id?:number,
     description?:string
 }
