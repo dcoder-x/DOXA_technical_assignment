@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { FormEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,37 +9,41 @@ import { authActions } from "@/lib/slices/authSlice";
 import { useAppDispatch } from "@/hooks/redux";
 import toast from "react-hot-toast";
 
-
 // export const metadata: Metadata = {
 //   title: "Sign in",
 //   description: "Sign in to manage your inventory",
 // };
 
 const SignIn: React.FC = () => {
+  const dispatch = useAppDispatch();
 
-  const dispatch = useAppDispatch()
+  const router = useRouter();
 
-  const router = useRouter()
-
-  function handleFormSubmit(e:FormEvent) {
-    e.preventDefault()
-    dispatch(authActions.signIn())
-    toast.success("Sign in successful")
-    router.push("/dashboard/")
+  function handleFormSubmit(e: FormEvent) {
+    e.preventDefault();
+    dispatch(authActions.signIn());
+    toast.success("Sign in successful");
+    router.push("/dashboard/");
   }
   return (
-<section className="  bg-gray-50 bg-gray-900">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <section className="  bg-gray-50 bg-gray-900">
+      <div className="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
         <a
           href="#"
-          className="flex items-center mb-6 text-2xl font-semibold text-gray-900 "
+          className="text-gray-900 mb-6 flex items-center text-2xl font-semibold "
         >
-          <Image src={""} alt="Doxa logo"/>
-          Doxa inventory 
+          <Image
+            className="h-12 w-12"
+            src={"/images/logo/logo.png"}
+            width={100}
+            height={100}
+            alt="Logo"
+          />
+          Doxa inventory
         </a>
-        <div className="w-full bg-white rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 bg-gray-800 border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
+        <div className="bg-gray-800 border-gray-700 w-full rounded-lg border bg-white shadow sm:max-w-md md:mt-0 xl:p-0">
+          <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
+            <h1 className="text-gray-900 text-xl font-bold leading-tight tracking-tight md:text-2xl ">
               Sign in to your account
             </h1>
             <form
@@ -50,7 +54,7 @@ const SignIn: React.FC = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 "
+                  className="text-gray-900 mb-2 block text-sm font-medium "
                 >
                   Your email
                 </label>
@@ -58,7 +62,7 @@ const SignIn: React.FC = () => {
                   type="email"
                   name="email"
                   id="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-violet-600 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400   focus:border-blue-500"
+                  className="bg-gray-50 border-gray-300 text-gray-900 bg-gray-700 border-gray-600 placeholder-gray-400 block w-full rounded-lg border p-2.5 focus:border-blue-500 focus:ring-violet-600   sm:text-sm"
                   placeholder="name@company.com"
                   required
                 />
@@ -66,7 +70,7 @@ const SignIn: React.FC = () => {
               <div>
                 <label
                   htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900 "
+                  className="text-gray-900 mb-2 block text-sm font-medium "
                 >
                   Password
                 </label>
@@ -75,7 +79,7 @@ const SignIn: React.FC = () => {
                   name="password"
                   id="password"
                   placeholder="Password"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-violet-600 focus:border-violet-600 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 "
+                  className="bg-gray-50 border-gray-300 text-gray-900 bg-gray-700 border-gray-600 placeholder-gray-400 block w-full rounded-lg border p-2.5 focus:border-violet-600 focus:ring-violet-600 sm:text-sm "
                   required
                 />
               </div>
@@ -90,7 +94,7 @@ const SignIn: React.FC = () => {
               <button
                 // disabled={}
                 type="submit"
-                className="w-full text-white bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:outline-none focus:ring-violet-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center "
+                className="w-full rounded-lg bg-violet-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-300 "
               >
                 Sign in
               </button>
@@ -99,7 +103,6 @@ const SignIn: React.FC = () => {
         </div>
       </div>
     </section>
-
   );
 };
 

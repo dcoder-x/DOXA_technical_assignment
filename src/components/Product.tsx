@@ -38,8 +38,13 @@ const Product: React.FC = () => {
 
   useEffect(() => {
     // // Redirect if product is not available and fetch product details on mount
-    !productData && router.push("/inventory/all");
-  }, []);
+
+    console.log(productData)
+    if(!productData && !isLoading){
+        toast.error("Error loading product, redirecting to inventory")
+        router.push("/inventory/all");
+    }
+  }, [isLoading]);
 
   // delete product from inventory
 

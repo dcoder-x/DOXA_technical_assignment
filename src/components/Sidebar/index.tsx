@@ -72,12 +72,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <Link href="/" className="flex items-center justify-center">
           <Image
             className="h-12 w-12"
-            src={"/images/logo/logo-icon.svg"}
+            src={"/images/logo/logo.png"}
             width={100}
             height={100}
             alt="Logo"
           />
-          <p></p>
+          <p>Doxa inventory</p>
         </Link>
 
         <button
