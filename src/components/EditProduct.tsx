@@ -76,6 +76,9 @@ const EditProduct = () => {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
       await updateProduct({ ...data, id: productData?.id as number }).unwrap();
+      toast.success(
+        "Product successfully edited",
+      );
       router.push("/inventory/all");
     } catch (error: any) {
       toast.error(

@@ -8,6 +8,9 @@ import { useDispatch } from "react-redux";
 import { authActions } from "@/lib/slices/authSlice";
 import { useAppDispatch } from "@/hooks/redux";
 import toast from "react-hot-toast";
+import * as yup from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 
 // export const metadata: Metadata = {
 //   title: "Sign in",
@@ -15,12 +18,20 @@ import toast from "react-hot-toast";
 // };
 
 const SignIn: React.FC = () => {
+
+  const schema = yup.object().shape({
+    email: yup.string().email("A valid email is required to continue").required(" Email can not be empty"),
+    password: yup.string().required("Password cannot be empty").min(3,"Password mut be at least characters long ")
+  })
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema)
+  });
   const dispatch = useAppDispatch();
 
   const router = useRouter();
 
-  function handleFormSubmit(e: FormEvent) {
-    e.preventDefault();
+  function handleFormSubmit(data:Record<string,any>) {
     dispatch(authActions.signIn());
     toast.success("Sign in successful");
     router.push("/dashboard/");
@@ -49,7 +60,7 @@ const SignIn: React.FC = () => {
             <form
               className="space-y-4 md:space-y-6"
               action="#"
-              onSubmit={handleFormSubmit}
+              onSubmit={handleSubmit(handleFormSubmit)}
             >
               <div>
                 <label
@@ -60,12 +71,15 @@ const SignIn: React.FC = () => {
                 </label>
                 <input
                   type="email"
-                  name="email"
+                  // name="email"
+                  {...register("email")}
                   id="email"
                   className="bg-gray-50 border-gray-300 text-gray-900 bg-gray-700 border-gray-600 placeholder-gray-400 block w-full rounded-lg border p-2.5 focus:border-blue-500 focus:ring-violet-600   sm:text-sm"
                   placeholder="name@company.com"
                   required
                 />
+                        {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+
               </div>
               <div>
                 <label
@@ -76,12 +90,15 @@ const SignIn: React.FC = () => {
                 </label>
                 <input
                   type="password"
-                  name="password"
+                  // name="password"
+                  {...register("password")}
                   id="password"
                   placeholder="Password"
                   className="bg-gray-50 border-gray-300 text-gray-900 bg-gray-700 border-gray-600 placeholder-gray-400 block w-full rounded-lg border p-2.5 focus:border-violet-600 focus:ring-violet-600 sm:text-sm "
                   required
                 />
+                        {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+
               </div>
               {/* <div className="flex items-center justify-between">
                 <a

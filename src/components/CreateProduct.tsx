@@ -28,9 +28,10 @@ const CreateProduct = () => {
   async function handleForm(data: Record<string, any>) {
     try {
       await addProduct(data).unwrap();
+      toast.success("Product created successfully")
       router.back();
     } catch (error: any) {
-      toast.error(error?.message);
+      toast.error(error?.message||"something went wrong, try again");
       console.log(error);
     }
   }

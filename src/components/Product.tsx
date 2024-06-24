@@ -50,6 +50,7 @@ const Product: React.FC = () => {
   async function deleteproduct() {
     try {
         await deleteProduct(product.id as number).unwrap()
+        toast.success("Product deleted sucessfully")
         router.back()
     } catch (error: any) {
       toast.error(error?.message);
@@ -137,7 +138,7 @@ const Product: React.FC = () => {
                         Quantity:
                       </span>
                       <span className="text-gray-600 dark:text-gray-300 mx-2">
-                        $ {productData?.quantity || "0"}
+                        {productData?.quantity || "0"}
                       </span>
                     </div>
                     <div>
